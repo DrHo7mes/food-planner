@@ -2,211 +2,277 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>چی بپزم؟ | برنامه‌ریز هوشمند غذا</title>
-  <!-- فونت فارسی و استایل مدرن -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>برنامه‌ریز هوشمند غذا | چی بپزم؟</title>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Vazirmatn', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 pb-16">
+<body class="bg-slate-50 text-slate-800 pb-20">
 
-  <!-- نوار بالای سایت -->
-  <header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-50">
-    <div class="max-w-xl mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold">🍳 چی بپزم؟</h1>
-      <span class="text-xs bg-emerald-700 px-2 py-1 rounded-full">نسخه آنلاین</span>
+  <!-- نوار بالای صفحه -->
+  <header class="bg-emerald-600 text-white shadow sticky top-0 z-50">
+    <div class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2 font-bold text-base">
+        <span>🍳</span>
+        <span>چی بپزم؟ (برنامه‌ریز غذا)</span>
+      </div>
+      <span class="text-xs bg-emerald-700 px-2.5 py-1 rounded-full">تحت وب</span>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto p-4 space-y-6">
+  <main class="max-w-2xl mx-auto p-4 space-y-5">
 
-    <!-- بخش اول: یخچال و مواد غذایی خانه -->
+    <!-- بخش ۱: انبار مواد غذایی خانه -->
     <section class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-      <h2 class="font-bold text-slate-700 text-sm">📦 موادی که در خانه دارید:</h2>
-      <div id="pantry-tags" class="flex flex-wrap gap-2">
-        <!-- تگ‌های مواد خانه توسط جاوااسکریپت اینجا اضافه می‌شوند -->
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-slate-800 text-sm">📦 موادی که در خانه دارید:</h2>
+        <span id="pantry-count" class="text-xs text-slate-400"></span>
       </div>
-      
-      <!-- فرم اضافه کردن ماده جدید -->
-      <div class="flex gap-2 pt-2 border-t border-slate-100">
-        <input id="new-item-input" type="text" placeholder="نام ماده جدید (مثلاً: سیب زمینی)..." 
-               class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-emerald-500">
-        <button onclick="addItem()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-700">
-          افزودن
+
+      <div id="pantry-tags" class="flex flex-wrap gap-1.5">
+        <!-- تگ‌های انبار -->
+      </div>
+
+      <!-- افزودن ماده جدید -->
+      <div class="flex gap-2 pt-2 border-t border-slate-100 text-xs">
+        <input id="item-input" type="text" placeholder="نام ماده (مثلاً: سیب زمینی)..." 
+               class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-emerald-500">
+        <button onclick="addItem()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-emerald-700 transition">
+          افزودن به انبار
         </button>
       </div>
     </section>
 
-    <!-- بخش دوم: تنظیمات سریع -->
-    <section class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center text-sm">
-      <span class="font-bold text-slate-700">غذا برای چند نفر؟</span>
-      <div class="flex gap-1">
-        <button onclick="setServings(1)" class="serving-btn px-3 py-1 rounded-lg border text-slate-600">۱ نفر</button>
-        <button onclick="setServings(2)" class="serving-btn px-3 py-1 rounded-lg border text-slate-600">۲ نفر</button>
-        <button onclick="setServings(4)" class="serving-btn px-3 py-1 rounded-lg bg-emerald-600 text-white font-bold">۴ نفر</button>
+    <!-- بخش ۲: تنظیمات نفرات و زمان -->
+    <section class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-wrap gap-4 items-center justify-between text-xs">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-700">تعداد نفرات:</span>
+        <div class="flex gap-1" id="servings-selector">
+          <button onclick="changeServings(1)" class="srv-btn w-7 h-7 rounded-lg border">۱</button>
+          <button onclick="changeServings(2)" class="srv-btn w-7 h-7 rounded-lg border">۲</button>
+          <button onclick="changeServings(4)" class="srv-btn w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold">۴</button>
+          <button onclick="changeServings(6)" class="srv-btn w-7 h-7 rounded-lg border">۶</button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-700">حداکثر زمان:</span>
+        <select id="time-filter" onchange="renderRecipes()" class="bg-slate-50 border border-slate-200 rounded-lg p-1.5 focus:outline-none">
+          <option value="30">۳۰ دقیقه</option>
+          <option value="60">۱ ساعت</option>
+          <option value="90" selected>۱.۵ ساعت</option>
+          <option value="180">نامحدود</option>
+        </select>
       </div>
     </section>
 
-    <!-- بخش سوم: غذاهای پیشنهادی بر اساس انبار شما -->
+    <!-- بخش ۳: لیست غذاهای پیشنهادی بر اساس مواد خانه -->
     <section class="space-y-3">
-      <h2 class="font-bold text-slate-700 text-sm">🍽️ غذاهای پیشنهادی بر اساس موجودی شما:</h2>
-      <div id="recipe-list" class="space-y-4">
-        <!-- غذاها اینجا خودکار نمایش داده می‌شوند -->
+      <h2 class="font-bold text-slate-800 text-sm">🍽️ غذاهای پیشنهادی:</h2>
+      <div id="recipe-container" class="space-y-4">
+        <!-- کارت‌های غذاها به شکل پویا نمایش داده می‌شوند -->
       </div>
     </section>
 
   </main>
 
   <script>
-    // مواد اولیه موجود در خانه (قابل تغییر توسط کاربر)
-    let myPantry = ['سینه مرغ', 'برنج', 'پیاز', 'تخم مرغ', 'گوجه فرنگی', 'روغن'];
-    let currentServings = 4;
+    // موجودی پیش‌فرض خانه کاربر
+    let pantry = ['سینه مرغ', 'برنج', 'پیاز', 'تخم مرغ', 'گوجه فرنگی', 'روغن مایع'];
+    let servings = 4;
 
-    // بانک غذاها
+    // پایگاه داده غذاها و ویدیوها
     const recipes = [
       {
-        id: 1,
-        title: "زرشک پلو با مرغ",
-        time: "۷۵ دقیقه",
-        baseServings: 4,
-        youtube: "https://www.youtube.com/results?search_query=زرشک+پلو+با+مرغ",
+        id: "zereshk-polo",
+        name: "زرشک پلو با مرغ",
+        time: 75,
+        defaultServings: 4,
+        youtube: "طرز تهیه زرشک پلو با مرغ مجلسی",
         ingredients: [
           { name: "سینه مرغ", amount: 600, unit: "گرم" },
           { name: "برنج", amount: 400, unit: "گرم" },
           { name: "پیاز", amount: 2, unit: "عدد" },
           { name: "زرشک", amount: 50, unit: "گرم" },
-          { name: "زعفران", amount: 1, unit: "گرم" }
+          { name: "زعفران", amount: 0.5, unit: "گرم" },
+          { name: "روغن مایع", amount: 3, unit: "قاشق" }
         ],
-        steps: "۱. مرغ را با پیاز و زعفران تفت داده و بپزید. ۲. برنج را دم کنید. ۳. زرشک را با کمی شکر و کره تفت داده و پلو را تزیین کنید."
+        steps: [
+          "تکه‌های مرغ را با زردچوبه و نمک در تابه سرخ کنید تا طلایی شوند.",
+          "پیاز نگینی را تفت دهید و مرغ را به همراه کمی آب اضافه کنید تا بپزد.",
+          "برنج را دم کنید و در انتها با زرشک و زعفران سرو نمایید."
+        ]
       },
       {
-        id: 2,
-        title: "املت قهوه‌خانه‌ای",
-        time: "۱۵ دقیقه",
-        baseServings: 2,
-        youtube: "https://www.youtube.com/results?search_query=املت+گوجه",
-        ingredients: [
-          { name: "تخم مرغ", amount: 3, unit: "عدد" },
-          { name: "گوجه فرنگی", amount: 3, unit: "عدد" },
-          { name: "روغن", amount: 2, unit: "قاشق" }
-        ],
-        steps: "۱. گوجه‌ها را ریز خرد کرده در روغن سرخ کنید تا آب آن کشیده شود. ۲. تخم‌مرغ‌ها را شکسته و بعد از کمی پختن هم بزنید."
-      },
-      {
-        id: 3,
-        title: "کباب تابه‌ای خانگی",
-        time: "۴۰ دقیقه",
-        baseServings: 4,
-        youtube: "https://www.youtube.com/results?search_query=کباب+تابه+ای",
+        id: "kabab-tabei",
+        name: "کباب تابه‌ای",
+        time: 40,
+        defaultServings: 4,
+        youtube: "طرز تهیه کباب تابه ای خانگی",
         ingredients: [
           { name: "گوشت چرخ‌کرده", amount: 500, unit: "گرم" },
           { name: "پیاز", amount: 2, unit: "عدد" },
           { name: "گوجه فرنگی", amount: 4, unit: "عدد" },
-          { name: "روغن", amount: 2, unit: "قاشق" }
+          { name: "روغن مایع", amount: 2, unit: "قاشق" }
         ],
-        steps: "۱. گوشت و پیاز رنده شده را ورز دهید. ۲. کف تابه پهن کنید و برش دهید. ۳. با گوجه‌ها سرخ کنید."
+        steps: [
+          "آب پیاز رنده شده را بگیرید و با گوشت و ادویه ورز دهید.",
+          "کف تابه پهن کنید، برش بزنید و گوجه‌ها را دور آن بچینید تا سرخ و پخته شوند."
+        ]
+      },
+      {
+        id: "omelette",
+        name: "املت گوجه‌فرنگی قهوه‌خانه‌ای",
+        time: 20,
+        defaultServings: 2,
+        youtube: "طرز تهیه املت قهوه خانه ای",
+        ingredients: [
+          { name: "تخم مرغ", amount: 3, unit: "عدد" },
+          { name: "گوجه فرنگی", amount: 3, unit: "عدد" },
+          { name: "روغن مایع", amount: 2, unit: "قاشق" }
+        ],
+        steps: [
+          "گوجه‌ها را در روغن تفت دهید تا آب آن کاملاً کشیده شود و به روغن بیفتد.",
+          "تخم‌مرغ‌ها را روی آن بشکنید و بعد از نیم‌بند شدن آرام هم بزنید."
+        ]
+      },
+      {
+        id: "greek-salad",
+        name: "سالاد مدیترانه‌ای",
+        time: 15,
+        defaultServings: 2,
+        youtube: "طرز تهیه سالاد یونانی",
+        ingredients: [
+          { name: "خیار", amount: 2, unit: "عدد" },
+          { name: "گوجه فرنگی", amount: 2, unit: "عدد" },
+          { name: "پیاز", amount: 1, unit: "عدد" },
+          { name: "پنیر فتا", amount: 100, unit: "گرم" }
+        ],
+        steps: [
+          "سبزیجات را خرد کرده، با پنیر مکعبی و روغن زیتون مخلوط و سرو کنید."
+        ]
       }
     ];
 
-    // نمایش موجودی خانه
     function renderPantry() {
       const container = document.getElementById('pantry-tags');
-      container.innerHTML = myPantry.map((item, index) => `
+      const count = document.getElementById('pantry-count');
+      count.innerText = pantry.length + " قلم کالا";
+
+      container.innerHTML = pantry.map((item, idx) => `
         <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-xs px-2.5 py-1 rounded-full border border-emerald-200">
           ${item}
-          <button onclick="removeItem(${index})" class="text-emerald-500 hover:text-red-500 font-bold ml-1">✕</button>
+          <button onclick="removeItem(${idx})" class="text-emerald-500 hover:text-red-500 font-bold ml-1">✕</button>
         </span>
       `).join('');
       renderRecipes();
     }
 
-    // اضافه کردن ماده جدید به خانه
     function addItem() {
-      const input = document.getElementById('new-item-input');
+      const input = document.getElementById('item-input');
       const val = input.value.trim();
-      if (val && !myPantry.includes(val)) {
-        myPantry.push(val);
+      if (val && !pantry.includes(val)) {
+        pantry.push(val);
         input.value = '';
         renderPantry();
       }
     }
 
-    // حذف ماده از خانه
-    function removeItem(index) {
-      myPantry.splice(index, 1);
+    function removeItem(idx) {
+      pantry.splice(idx, 1);
       renderPantry();
     }
 
-    // تغییر تعداد نفرات
-    function setServings(num) {
-      currentServings = num;
-      document.querySelectorAll('.serving-btn').forEach(btn => {
-        if(btn.innerText.includes(num)) {
-          btn.className = 'serving-btn px-3 py-1 rounded-lg bg-emerald-600 text-white font-bold';
+    function changeServings(num) {
+      servings = num;
+      document.querySelectorAll('.srv-btn').forEach(btn => {
+        if (btn.innerText == num) {
+          btn.className = "srv-btn w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold";
         } else {
-          btn.className = 'serving-btn px-3 py-1 rounded-lg border text-slate-600';
+          btn.className = "srv-btn w-7 h-7 rounded-lg border text-slate-700";
         }
       });
       renderRecipes();
     }
 
-    // بررسی و نمایش غذاها
     function renderRecipes() {
-      const list = document.getElementById('recipe-list');
-      list.innerHTML = recipes.map(recipe => {
-        // بررسی مواد موجود و مواد ناموجود
-        const available = [];
-        const missing = [];
+      const maxT = Number(document.getElementById('time-filter').value);
+      const container = document.getElementById('recipe-container');
 
-        recipe.ingredients.forEach(ing => {
-          if (myPantry.includes(ing.name)) {
-            available.push(ing.name);
-          } else {
-            missing.push(ing.name);
-          }
-        });
+      const matches = recipes
+        .filter(r => r.time <= maxT)
+        .map(recipe => {
+          const available = [];
+          const missing = [];
 
-        const percent = Math.round((available.length / recipe.ingredients.length) * 100);
-        const scaleFactor = currentServings / recipe.baseServings;
+          recipe.ingredients.forEach(ing => {
+            if (pantry.includes(ing.name)) {
+              available.push(ing);
+            } else {
+              missing.push(ing);
+            }
+          });
 
+          const percent = Math.round((available.length / recipe.ingredients.length) * 100);
+          return { recipe, percent, missing };
+        })
+        .sort((a, b) => b.percent - a.percent);
+
+      container.innerHTML = matches.map(({ recipe, percent, missing }) => {
+        const factor = servings / recipe.defaultServings;
         return `
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
             <div class="flex justify-between items-start">
               <div>
-                <h3 class="font-bold text-base text-slate-800">${recipe.title}</h3>
-                <span class="text-xs text-slate-400">⏱️ ${recipe.time}</span>
+                <h3 class="font-bold text-base text-slate-800">${recipe.name}</h3>
+                <span class="text-xs text-slate-400">⏱ ${recipe.time} دقیقه</span>
               </div>
               <span class="text-xs font-bold px-2.5 py-1 rounded-full ${percent >= 70 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                ${percent}٪ مواد موجود است
+                ${percent}٪ مواد در خانه هست
               </span>
             </div>
 
-            <!-- مواد لازم بر اساس نفرات انتخابی -->
+            <!-- مواد بر اساس تعداد نفرات -->
             <div class="bg-slate-50 p-3 rounded-xl text-xs space-y-1">
-              <span class="font-bold text-slate-600">مواد لازم برای ${currentServings} نفر:</span>
-              <ul class="text-slate-500 list-disc list-inside">
+              <span class="font-bold text-slate-700">مواد لازم برای ${servings} نفر:</span>
+              <ul class="text-slate-600 space-y-0.5 mt-1">
                 ${recipe.ingredients.map(ing => `
-                  <li>${ing.name}: ${(ing.amount * scaleFactor).toFixed(0)}${ing.unit}</li>
+                  <li class="flex justify-between border-b border-slate-100 py-0.5">
+                    <span>${ing.name}</span>
+                    <span class="font-bold">${Math.round(ing.amount * factor * 10) / 10}${ing.unit}</span>
+                  </li>
                 `).join('')}
               </ul>
             </div>
 
+            <!-- وضعیت کسری خرید -->
             ${missing.length > 0 ? `
-              <p class="text-xs text-red-500 font-medium">🛒 نیاز به خرید دارید: ${missing.join('، ')}</p>
+              <div class="p-2 bg-red-50 text-red-600 text-xs rounded-xl flex items-center gap-1 font-medium">
+                <span>🛒 نیاز به خرید:</span>
+                <span>${missing.map(m => m.name).join('، ')}</span>
+              </div>
             ` : `
-              <p class="text-xs text-emerald-600 font-medium">✅ همه مواد در خانه موجود است!</p>
+              <div class="p-2 bg-emerald-50 text-emerald-700 text-xs rounded-xl font-medium">
+                ✅ تمام مواد در انبار خانه موجود است!
+              </div>
             `}
 
-            <div class="flex justify-between items-center pt-2 border-t border-slate-100 text-xs">
-              <span class="text-slate-500">${recipe.steps}</span>
+            <!-- دستور پخت -->
+            <div class="text-xs text-slate-600 pt-1 space-y-1">
+              <span class="font-bold text-slate-700">مراحل آماده‌سازی:</span>
+              ${recipe.steps.map((st, i) => `<p>${i + 1}.${st}</p>`).join('')}
             </div>
-            
-            <div class="pt-1">
-              <a href="${recipe.youtube}" target="_blank" class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-red-100">
-                ▶ مشاهده آموزش در یوتیوب
+
+            <!-- دکمه ویدئو یوتیوب -->
+            <div class="pt-2 border-t border-slate-100">
+              <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(recipe.youtube)}" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-full text-xs font-bold transition">
+                <span>▶ مشاهده آموزش پخت در یوتیوب</span>
               </a>
             </div>
           </div>
@@ -214,7 +280,7 @@
       }).join('');
     }
 
-    // اجرای اولیه
+    // شروع اجرای اولیه
     renderPantry();
   </script>
 </body>
